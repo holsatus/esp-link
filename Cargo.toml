@@ -1,0 +1,66 @@
+[package]
+name = "esp-link"
+version = "0.1.0"
+authors = ["Peter Krull <peterkrullpeter@gmail.com>"]
+edition = "2021"
+license = "MIT OR Apache-2.0"
+
+[features]
+usb-serial = []
+println = []
+
+[dependencies]
+
+esp-hal = { git = "https://github.com/esp-rs/esp-hal", features = [ "esp32" ] }
+esp-println = { git = "https://github.com/esp-rs/esp-hal", features = ["esp32", "log"] }
+esp-alloc = { git = "https://github.com/esp-rs/esp-hal" }
+esp-hal-embassy = { git = "https://github.com/esp-rs/esp-hal", features = ["esp32", "integrated-timers"] }
+esp-backtrace = { git = "https://github.com/esp-rs/esp-hal", features = [
+    "exception-handler",
+    "panic-handler",
+    "println",
+    "esp32",
+] }
+esp-wifi = { git = "https://github.com/esp-rs/esp-hal", features = [
+    "esp32",
+    "esp-now",
+    "async",
+    "phy-enable-usb",
+    "utils",
+    "wifi",
+] }
+
+embassy-executor = { version = "0.6.3", features = ["task-arena-size-65536"] }
+embassy-futures = { version = "0.1.1" }
+embassy-sync = { version = "0.6.1" }
+embassy-time-driver = { version = "0.1.0", features = [ "tick-hz-1_000_000" ] }
+embassy-time = { version = "0.3.2" }
+
+static_cell = "2.1.0"
+log = { version = "0.4.22" }
+embedded-io = "0.6.1"
+
+
+smoltcp = { version = "0.12.0", default-features = false, features = [
+    "medium-ethernet",
+    "proto-dhcpv4",
+    "proto-igmp",
+    "proto-ipv4",
+    "socket-dhcpv4",
+    "socket-icmp",
+    "socket-raw",
+    "socket-tcp",
+    "socket-udp",
+] }
+
+[profile.dev]
+opt-level = "s"
+
+[profile.release]
+codegen-units = 1 # LLVM can perform better optimizations using a single thread
+debug = 2
+debug-assertions = false
+incremental = false
+lto = 'fat'
+opt-level = 's'
+overflow-checks = false
